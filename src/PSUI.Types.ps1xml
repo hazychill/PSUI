@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Types>
+    <Type>
+        <Name>System.Windows.Automation.AutomationElement</Name>
+        <Members>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <PropertySet>
+                        <Name>DefaultDisplayPropertySet</Name>
+                        <ReferencedProperties>
+                            <Name>RuntimeId</Name>
+                            <Name>Name</Name>
+                            <Name>ControlTypeName</Name>
+                        </ReferencedProperties>
+                    </PropertySet>
+                </Members>
+            </MemberSet>
+
+            <ScriptProperty>
+                <Name>RuntimeId</Name>
+                <GetScriptBlock>
+                    $this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty) -join ','
+                </GetScriptBlock>
+            </ScriptProperty>
+            <ScriptProperty>
+                <Name>Name</Name>
+                <GetScriptBlock>
+                    $this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::NameProperty)
+                </GetScriptBlock>
+            </ScriptProperty>
+            <ScriptProperty>
+                <Name>ControlType</Name>
+                <GetScriptBlock>
+                    $this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::ControlTypeProperty)
+                </GetScriptBlock>
+            </ScriptProperty>
+            <ScriptProperty>
+                <Name>ControlTypeName</Name>
+                <GetScriptBlock>
+                    $this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::ControlTypeProperty).ProgrammaticName
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
+</Types>
