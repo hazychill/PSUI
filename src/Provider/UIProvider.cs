@@ -17,13 +17,14 @@ namespace PSUI.Provider {
         private AutomationElement root;
 
         public UIProvider() : base() {
-            var patternStr = """
-                ^(?x:
-                (?i:ROOT)
-                (?:[/\\]+(?<runtimeId>-?\d+(?:,-?\d+)*))*
-                [/\\]*
-                )$
-                """;
+            var patternStr = @"^(?x:(?i:ROOT)(?:[/\\]+(?<runtimeId>-?\d+(?:,-?\d+)*))*[/\\]*)$";
+            // var patternStr = """
+            //     ^(?x:
+            //     (?i:ROOT)
+            //     (?:[/\\]+(?<runtimeId>-?\d+(?:,-?\d+)*))*
+            //     [/\\]*
+            //     )$
+            //     """;
             pathValidationPattern = new Regex(patternStr);
 
             root = AutomationElement.RootElement;

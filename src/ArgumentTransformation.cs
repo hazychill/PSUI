@@ -20,7 +20,7 @@ namespace PSUI {
             }
         }
 
-        public static ReadOnlyDictionary<String, AutomationProperty> Map => transformMap.AsReadOnly();
+        public static ReadOnlyDictionary<String, AutomationProperty> Map => new ReadOnlyDictionary<string, AutomationProperty>(transformMap);
 
     }
     
@@ -68,7 +68,7 @@ namespace PSUI {
             }
         }
 
-        public static ReadOnlyDictionary<String, AutomationPattern> Map => transformMap.AsReadOnly();
+        public static ReadOnlyDictionary<String, AutomationPattern> Map => new ReadOnlyDictionary<string, AutomationPattern>(transformMap);
 
     }
 
@@ -100,7 +100,7 @@ namespace PSUI {
                 }
             }
         }
-         public static ReadOnlyDictionary<String, ControlType> Map => transformMap.AsReadOnly();
+         public static ReadOnlyDictionary<String, ControlType> Map => new ReadOnlyDictionary<string, ControlType>(transformMap);
     }
 
     public class ArgumentToControlTypeTransformationAttribute : ArgumentTransformationAttribute {
