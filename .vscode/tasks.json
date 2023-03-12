@@ -4,6 +4,28 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build Release",
+            "command": "pwsh",
+            "type": "shell",
+            "args": [
+                "-ExecutionPolicy", "RemoteSigned",
+                "-NoProfile",
+                "-File", "${workspaceFolder}/build.ps1",
+                "-Configuration", "Release"
+            ]
+        },
+        {
+            "label": "Build Debug",
+            "command": "pwsh",
+            "type": "shell",
+            "args": [
+                "-ExecutionPolicy", "RemoteSigned",
+                "-NoProfile",
+                "-File", "${workspaceFolder}/build.ps1",
+                "-Configuration", "Debug"
+            ]
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "shell",
