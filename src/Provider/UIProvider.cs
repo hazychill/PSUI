@@ -48,7 +48,7 @@ namespace PSUI.Provider {
                 view = UIDriveView.Raw;
             }
             else {
-                view = dynamicParams.View;
+                view = dynamicParams.UIView;
             }
             return new UIDriveInfo(drive, view);
         }
