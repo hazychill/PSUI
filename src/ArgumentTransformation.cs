@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Management.Automation;
+using System.Runtime.Loader;
+using System.Text.RegularExpressions;
 using System.Windows.Automation;
 
 namespace PSUI {
@@ -10,12 +12,35 @@ namespace PSUI {
         static AutomationPropertyTransformation() {
             transformMap = new Dictionary<string, AutomationProperty>(StringComparer.OrdinalIgnoreCase);
 
-            var propFieldQuery = typeof(AutomationElement).GetFields().Where(x => x.FieldType == typeof(AutomationProperty));
+            var typeNameReplacePattern = new Regex("Pattern$");
+            var propNameReplacePattern = new Regex("Property$");
+
+            var elemType = typeof(AutomationElement);
+            var propType = typeof(AutomationProperty);
+            var propFieldQuery = elemType.GetFields().Where(x => x.FieldType == propType);
             foreach (var propField in propFieldQuery) {
-                var name = propField.Name.Replace("Property", "");
+                var name = propNameReplacePattern.Replace(propField.Name, string.Empty);
                 var val = propField.GetValue(null) as AutomationProperty;
                 if (val is not null) {
                     transformMap.Add(name, val);
+                }
+            }
+
+            var patternPropFields = elemType.Assembly.GetTypes()
+                .Where(t =>
+                    string.Equals(t.Namespace, elemType.Namespace, StringComparison.Ordinal) &&
+                    t.Name.EndsWith("Pattern", StringComparison.Ordinal))
+                .SelectMany(t => t.GetFields()
+                    .Where(f =>
+                        f.Name.EndsWith("Property", StringComparison.Ordinal) &&
+                        f.FieldType == propType)
+                    .Select(f => new {
+                        Name = $"{typeNameReplacePattern.Replace(t.Name, string.Empty)}.{propNameReplacePattern.Replace(f.Name, string.Empty)}",
+                        Prop = f.GetValue(null) as AutomationProperty
+                    }));
+            foreach (var x in patternPropFields) {
+                if (x.Prop is not null) {
+                    transformMap.Add(x.Name, x.Prop);
                 }
             }
         }
