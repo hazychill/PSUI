@@ -105,7 +105,7 @@ PrivateData = @{
         LicenseUri = 'https://github.com/hazychill/PSUI/blob/main/LICENSE'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://raw.githubusercontent.com/hazychill/PSUI'
+        ProjectUri = 'https://github.com/hazychill/PSUI'
 
         # A URL to an icon representing this module.
         # IconUri = ''
