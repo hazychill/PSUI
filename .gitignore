@@ -2,3 +2,5 @@
 /src/obj/
 /build/*
 !/build/.dummy
+/test/TestApp/bin/
+/test/TestApp/obj/

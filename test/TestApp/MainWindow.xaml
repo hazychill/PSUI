@@ -1,0 +1,42 @@
+﻿<Window x:Class="TestApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Label Name="labelElement" Grid.Row="0">label</Label>
+        <TextBox Name="textBoxElement" Grid.Row="1">text box</TextBox>
+        <ScrollBar Name="scrollBarElement" Grid.Row="2" />
+        <Button Name="buttonElement" Grid.Row="3">button</Button>
+        <TreeView Name="treeViewElement" Grid.Row="4">
+            <TreeViewItem Name="treeViewItem1" Header="Item1" IsExpanded="True">
+                <TreeViewItem Name="treeViewItem1_1" Header="Item1_1" />
+                <TreeViewItem Name="treeViewItem1_2" Header="Item1_2" />
+                <TreeViewItem Name="treeViewItem1_3" Header="Item1_3" />
+            </TreeViewItem>
+            <TreeViewItem Name="treeViewItem2" Header="Item2" IsExpanded="True">
+                <TreeViewItem Name="treeViewItem2_1" Header="Item2_1" />
+                <TreeViewItem Name="treeViewItem2_2" Header="Item2_2" />
+                <TreeViewItem Name="treeViewItem2_3" Header="Item2_3" />
+            </TreeViewItem>
+            <TreeViewItem Name="treeViewItem3" Header="Item3" IsExpanded="True">
+                <TreeViewItem Name="treeViewItem3_1" Header="Item3_1" IsExpanded="True">
+                    <TreeViewItem Name="treeViewItem3_1_1" Header="Item3_1_1" />
+                    <TreeViewItem Name="treeViewItem3_1_2" Header="Item3_1_2" />
+                </TreeViewItem>
+                <TreeViewItem Name="treeViewItem3_2" Header="Item3_2" />
+                <TreeViewItem Name="treeViewItem3_3" Header="Item3_3" />
+            </TreeViewItem>
+        </TreeView>
+    </Grid>
+</Window>
