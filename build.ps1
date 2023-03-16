@@ -52,7 +52,7 @@ try {
     }
     & dotnet publish -c $Configuration -o $moduleOutDir $publishParams
     if ($? -eq $false) {
-        throw "dot net publish failed"
+        throw "dotnet publish failed"
     }
 
     # copy types.ps1xml
