@@ -23,13 +23,13 @@ Describe 'Test-Path of PSUI' {
     It 'Returns true for valid and exist path' {
         $testAppProcess = Start-TestApp
 
-        $windowRuntimeId = $testAppProcess.UIWindow.RuntimeId
+        $windowRuntimeId = $testAppProcess.UIWindow.ItemId
         $path = "UI:\${windowRuntimeId}"
         Test-Path -LiteralPath $path | Should -Be $true
         $path = "UI::ROOT\${windowRuntimeId}"
         Test-Path -LiteralPath $path | Should -Be $true
 
-        $buttonRuntimeId = $testAppProcess.UIButton.RuntimeId
+        $buttonRuntimeId = $testAppProcess.UIButton.ItemId
         $path = "UI:\${windowRuntimeId}\${buttonRuntimeId}"
         Test-Path -LiteralPath $path | Should -Be $true
         $path = "UI::ROOT\${windowRuntimeId}\${buttonRuntimeId}"
@@ -59,7 +59,7 @@ Describe 'Test-Path of PSUI' {
     It 'Returns false for disappered path' {
         $testAppProcess = Start-TestApp
 
-        $windowRuntimeId = $testAppProcess.UIWindow.RuntimeId
+        $windowRuntimeId = $testAppProcess.UIWindow.ItemId
         $path = "UI:\${windowRuntimeId}"
         Test-Path -LiteralPath $path | Should -Be $true
         $path = "UI::ROOT\${windowRuntimeId}"

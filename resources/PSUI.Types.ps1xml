@@ -9,9 +9,9 @@
                     <PropertySet>
                         <Name>DefaultDisplayPropertySet</Name>
                         <ReferencedProperties>
-                            <Name>RuntimeId</Name>
+                            <Name>ItemId</Name>
                             <Name>Name</Name>
-                            <Name>ControlTypeName</Name>
+                            <Name>ControlType</Name>
                         </ReferencedProperties>
                     </PropertySet>
                 </Members>
@@ -43,10 +43,6 @@
             </ScriptProperty>
             <ScriptProperty>
                 <Name>ControlType</Name>
-                <GetScriptBlock>$this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::ControlTypeProperty).ProgrammaticName</GetScriptBlock>
-            </ScriptProperty>
-            <ScriptProperty>
-                <Name>ControlTypeRaw</Name>
                 <GetScriptBlock>$this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::ControlTypeProperty)</GetScriptBlock>
             </ScriptProperty>
             <ScriptProperty>
@@ -223,11 +219,11 @@
             </ScriptProperty>
             <ScriptProperty>
                 <Name>RuntimeId</Name>
-                <GetScriptBlock>$this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty) -join ','</GetScriptBlock>
+                <GetScriptBlock>$this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty)</GetScriptBlock>
             </ScriptProperty>
             <ScriptProperty>
-                <Name>RuntimeIdRaw</Name>
-                <GetScriptBlock>$this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty)</GetScriptBlock>
+                <Name>ItemId</Name>
+                <GetScriptBlock>$this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty) -join ','</GetScriptBlock>
             </ScriptProperty>
             <ScriptProperty>
                 <Name>SizeOfSet</Name>
