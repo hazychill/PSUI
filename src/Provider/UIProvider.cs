@@ -200,13 +200,16 @@ namespace PSUI.Provider {
                         null));
                 }
                 else {
-                    var propMap = AutomationPropertyTransformation.Map;
+                    var converter = AutomationPropertyTypeConverter.Instance;
 
                     foreach (var propName in providerSpecificPickList) {
-                        if (propMap.TryGetValue(propName, out AutomationProperty? prop)) {
-                            var propVal = item.GetCurrentPropertyValue(prop);
-                            if (propVal is not null) {
-                                WritePropertyObject(propVal, path);
+                        if (converter.CanConvertFrom(propName, typeof(AutomationProperty))) {
+                            var prop = converter.ConvertFrom(propName, typeof(AutomationProperty), null, true) as AutomationProperty;
+                            if (prop is not null) {
+                                var propVal = item.GetCurrentPropertyValue(prop);
+                                if (propVal is not null) {
+                                    WritePropertyObject(propVal, path);
+                                }
                             }
                         }
                     }

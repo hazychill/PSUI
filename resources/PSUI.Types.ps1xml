@@ -232,4 +232,31 @@
 
         </Members>
     </Type>
+
+    <Type>
+        <Name>System.Windows.Automation.ControlType</Name>
+        <TypeConverter>
+            <TypeName>PSUI.ControlTypeTypeConverter</TypeName>
+        </TypeConverter>
+        <Members>
+            <ScriptMethod>
+                <Name>ToString</Name>
+                <Script>[PSUI.ControlTypeTypeConverter]::Instance.ConvertTo($this, [string], $null, $false)</Script>
+            </ScriptMethod>
+        </Members>
+    </Type>
+
+    <Type>
+        <Name>System.Windows.Automation.AutomationProperty</Name>
+        <TypeConverter>
+            <TypeName>PSUI.AutomationPropertyTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
+
+    <Type>
+        <Name>System.Windows.Automation.AutomationPattern</Name>
+        <TypeConverter>
+            <TypeName>PSUI.AutomationPatternTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
 </Types>

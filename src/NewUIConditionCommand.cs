@@ -7,7 +7,6 @@ namespace PSUI {
     public class NewUIConditionCommand : PSCmdlet {
 
         [Parameter(ParameterSetName = "property", Position = 0)]
-        [ArgumentToAutomationPropertyTransformationAttribute]
         [ValidateNotNull]
         public AutomationProperty? Property { get; set; }
 

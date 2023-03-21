@@ -19,6 +19,18 @@ Describe 'Get-ItemProperty of PSUI' {
         $actual = $testAppWindow | Get-ItemProperty -Name 'BoundingRectangle'
         $actual | Should -Not -Be $null
         $actual | Should -Be $expected
+
+        $actual = $testAppWindow | Get-ItemProperty -Name 'boundingrectangle'
+        $actual | Should -Not -Be $null
+        $actual | Should -Be $expected
+
+        $actual = $testAppWindow | Get-ItemProperty -Name 'AutomationElement.BoundingRectangle'
+        $actual | Should -Not -Be $null
+        $actual | Should -Be $expected
+
+        $actual = $testAppWindow | Get-ItemProperty -Name 'automationelement.boundingrectangle'
+        $actual | Should -Not -Be $null
+        $actual | Should -Be $expected
     }
 
     It 'Gets element property of Pattern' {
@@ -29,5 +41,13 @@ Describe 'Get-ItemProperty of PSUI' {
             | Get-ItemProperty -Name 'Scroll.VerticalViewSize'
         $actual | Should -Not -Be $null
         $actual | Should -Be $expected
+
+        $actual = $testAppWindow
+            | Get-ChildItem
+            | Where-Object AutomationId -EQ 'scrollBarElement'
+            | Get-ItemProperty -Name 'scroll.verticalviewsize'
+        $actual | Should -Not -Be $null
+        $actual | Should -Be $expected
+
     }
 }

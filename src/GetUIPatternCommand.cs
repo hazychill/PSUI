@@ -8,7 +8,6 @@ namespace PSUI {
         public AutomationElement[]? AutomationElement { get; set; }
 
         [Parameter(ParameterSetName = "patternObj", Position = 0)]
-        [ArgumentToAutomationPatternTransformation]
         public AutomationPattern? Pattern { get; set; }
 
         [Parameter(ParameterSetName = "supportedPattern")]

@@ -8,7 +8,6 @@ namespace PSUI.Provider {
         public string? UIName { get; set; }
 
         [Parameter]
-        [ArgumentToControlTypeTransformation]
         public ControlType? UIControlType { get; set; }
 
         [Parameter]

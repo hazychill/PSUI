@@ -34,6 +34,9 @@ Describe 'Get-Item of PSUI' {
 
     It 'Filters child with control type' {
         Get-ChildItem -LiteralPath $testAppWindow.PSPath -UIControlType 'Edit' | Should -Be $testAppProc.UITextBox
+        Get-ChildItem -LiteralPath $testAppWindow.PSPath -UIControlType 'ControlType.Edit' | Should -Be $testAppProc.UITextBox
+        Get-ChildItem -LiteralPath $testAppWindow.PSPath -UIControlType 'edit' | Should -Be $testAppProc.UITextBox
+        Get-ChildItem -LiteralPath $testAppWindow.PSPath -UIControlType 'controltype.edit' | Should -Be $testAppProc.UITextBox
     }
 
     It 'Filters child with name and control type' {
