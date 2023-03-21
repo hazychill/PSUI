@@ -8,6 +8,8 @@ using System.Windows.Automation;
 
 namespace PSUI.Provider {
     [CmdletProvider("UI", ProviderCapabilities.None)]
+    [OutputType(typeof(AutomationElement), ProviderCmdlet = ProviderCmdlet.GetItem)]
+    [OutputType(typeof(AutomationElement), ProviderCmdlet = ProviderCmdlet.GetChildItem)]
     public class UIProvider : NavigationCmdletProvider, IPropertyCmdletProvider {
         private const char itemSeparator = '\\';
         private const char altItemSeparator = '/';
