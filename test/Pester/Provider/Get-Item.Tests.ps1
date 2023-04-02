@@ -34,10 +34,10 @@ Describe 'Get-Item of PSUI' {
             $testAppProc = Start-TestApp
 
             $testAppWin = $testAppProc.UIWindow
-            $testAppWinRuntimeId = (Get-RuntimeIdProperty -Element $testAppWin) -join ','
+            $testAppWinRuntimeId = (Get-RuntimeIdProperty -Element $testAppWin) -join [PSUI.RuntimeId]::ItemIdElementSeparator
 
             $button = $testAppProc.UIButton
-            $buttonRuntimeId = (Get-RuntimeIdProperty -Element $button) -join ','
+            $buttonRuntimeId = (Get-RuntimeIdProperty -Element $button) -join [PSUI.RuntimeId]::ItemIdElementSeparator
         }
 
         AfterAll {

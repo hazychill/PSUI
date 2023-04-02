@@ -223,7 +223,7 @@
             </ScriptProperty>
             <ScriptProperty>
                 <Name>ItemId</Name>
-                <GetScriptBlock>$this.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty) -join ','</GetScriptBlock>
+                <GetScriptBlock>[PSUI.RuntimeId]::new($this).ToItemId()</GetScriptBlock>
             </ScriptProperty>
             <ScriptProperty>
                 <Name>SizeOfSet</Name>

@@ -77,7 +77,7 @@ function Start-TestApp {
     $testAppWindow = [System.Windows.Automation.AutomationElement]::RootElement.FindFirst(
         [System.Windows.Automation.TreeScope]::Children,
         [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ProcessIdProperty, $proc.Id))
-    $testAppWindowPath = "UI::ROOT\$($testAppWindow.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty) -join ',')"
+    $testAppWindowPath = "UI::ROOT\$($testAppWindow.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty) -join [PSUI.RuntimeId]::ItemIdElementSeparator)"
     $label = $testAppWindow.FindFirst(
         [System.Windows.Automation.TreeScope]::Children,
         [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::AutomationIdProperty, 'labelElement'))

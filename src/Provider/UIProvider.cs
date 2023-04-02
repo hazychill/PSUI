@@ -12,14 +12,16 @@ namespace PSUI.Provider {
     [OutputType(typeof(AutomationElement), ProviderCmdlet = ProviderCmdlet.GetChildItem)]
     public class UIProvider : NavigationCmdletProvider, IPropertyCmdletProvider {
         private const char itemSeparator = '\\';
-        private const char altItemSeparator = '/';
-        private const char runtimeIdElementSeparator = ',';
 
         private Regex pathValidationPattern;
         private AutomationElement root;
 
+        public static readonly string DefaultDriveName = "UI";
+
+        public static readonly string ProviderPathRoot = "ROOT";
+
         public UIProvider() : base() {
-            var patternStr = @"^(?x:(?i:ROOT)(?:[/\\]+(?<runtimeId>-?\d+(?:,-?\d+)*))*[/\\]*)$";
+            var patternStr = @"^(?x:(?i:ROOT)(?:[/\\]+(?<runtimeId>-?\d+(?:_-?\d+)*))*[/\\]*)$";
             // var patternStr = """
             //     ^(?x:
             //     (?i:ROOT)
@@ -36,7 +38,7 @@ namespace PSUI.Provider {
         #region DriveCmdletProvider
 
         protected override Collection<PSDriveInfo> InitializeDefaultDrives() {
-            var driveInfo = new PSDriveInfo("UI", ProviderInfo, "ROOT", "", null);
+            var driveInfo = new PSDriveInfo(DefaultDriveName, ProviderInfo, ProviderPathRoot, "", null);
             var uiDriveInfo = new UIDriveInfo(driveInfo, UIDriveView.Raw);
             var collection = new Collection<PSDriveInfo>();
             collection.Add(uiDriveInfo);
@@ -235,35 +237,26 @@ namespace PSUI.Provider {
 
         #region Other
 
-        private List<int[]>? GetRuntimeIdPath(string path) {
+        private RuntimeId[]? GetRuntimeIdPath(string path) {
             var m = pathValidationPattern.Match(path);
             if (m.Success) {
-                var runtimeIdList = new List<int[]>();
+                var runtimeIdList = new List<RuntimeId>();
                 foreach (Capture capture in m.Groups["runtimeId"].Captures) {
                     var val = capture.Value;
-                    var idElements = val.Split(",");
-                    var runtimeId = new int[idElements.Length];
-                    for (var i = 0; i < idElements.Length; i++) {
-                        if (int.TryParse(idElements[i], out int idElem)) {
-                            runtimeId[i] = idElem;
-                        }
-                        else {
-                            return null;
-                        }
-                    }
+                    var runtimeId = new RuntimeId(val);
                     runtimeIdList.Add(runtimeId);
                 }
-                return runtimeIdList;
+                return runtimeIdList.ToArray();
             }
             else {
                 return null;
             }
         }
 
-        private AutomationElement? DigPath(AutomationElement startElement, IEnumerable<int[]> runtimeIdPath) {
+        private AutomationElement? DigPath(AutomationElement startElement, IEnumerable<RuntimeId> runtimeIdPath) {
             var contextElement = startElement;
             foreach (var runtimeId in runtimeIdPath) {
-                var cond = new PropertyCondition(AutomationElement.RuntimeIdProperty, runtimeId);
+                var cond = new PropertyCondition(AutomationElement.RuntimeIdProperty, runtimeId.Value);
                 var childElement = contextElement.FindFirst(TreeScope.Children, cond);
                 if (childElement is not null) {
                     contextElement = childElement;
@@ -285,19 +278,11 @@ namespace PSUI.Provider {
             }
         }
 
-        private int[] GetRuntimeId(AutomationElement element) {
-            var runtimeId = element.GetCurrentPropertyValue(AutomationElement.RuntimeIdProperty) as int[];
-            if (runtimeId is null) {
-                throw new Exception("RuntimeId is null");
-            }
-            return runtimeId;
-        }
-
         private string WriteChildItemObject(AutomationElement element, string parentPath, bool writeName = false) {
-            int[] runtimeId = GetRuntimeId(element);
+            var runtimeId = new RuntimeId(element);
             var childPath = MakePath(parentPath, runtimeId);
             if (writeName) {
-                WriteItemObject(GetRuntimeIdString(runtimeId), childPath, true);
+                WriteItemObject(runtimeId.ToItemId(), childPath, true);
             }
             else {
                 WriteItemObject(element, childPath, true);
@@ -305,16 +290,6 @@ namespace PSUI.Provider {
             return childPath;
         }
 
-        private string GetRuntimeIdString(int[] runtimeId) {
-            return string.Join(runtimeIdElementSeparator, runtimeId.Select(x => x.ToString()));
-        }
-
-        private string GetRuntimeIdString(AutomationElement element) {
-            var runtimeId = GetRuntimeId(element);
-            return GetRuntimeIdString(runtimeId);
-        }
-
-        
         private bool TryGetPathItem(string path, [NotNullWhen(true)] out AutomationElement? pathItem, bool writeError = false) {
             var runtimeIdPath = GetRuntimeIdPath(path);
             if (runtimeIdPath is null) {
@@ -339,14 +314,13 @@ namespace PSUI.Provider {
             }
         }
 
-        private string MakePath(string path, int[] runtimeId) {
-            var runtimeIdStr = GetRuntimeIdString(runtimeId);
-            return MakePath(path, runtimeIdStr);
+        private string MakePath(string path, RuntimeId runtimeId) {
+            return MakePath(path, runtimeId.ToItemId());
         }
 
         private string MakePath(string path, AutomationElement child) {
-            var runtimeId = GetRuntimeId(child);
-            return MakePath(path, runtimeId);
+            var itemId = new RuntimeId(child).ToItemId();
+            return MakePath(path, itemId);
         }
 
          private void GetChildItems(AutomationElement parent, string path, bool recurse, uint depth) {
@@ -442,16 +416,16 @@ namespace PSUI.Provider {
         private string GetPathFromRoot(AutomationElement element) {
             var walker = GetTreeWalker();
             var runtimeIdPath = new List<string>();
-            var rootRuntimeId = GetRuntimeIdString(AutomationElement.RootElement);
+            var rootItemId = new RuntimeId(AutomationElement.RootElement).ToItemId();
             var contextElem = element;
-            var runtimeIdStr = GetRuntimeIdString(contextElem);
-            while (!string.Equals(runtimeIdStr, rootRuntimeId, StringComparison.Ordinal)) {
-                runtimeIdPath.Insert(0, runtimeIdStr);
+            var itemId = new RuntimeId(contextElem).ToItemId();
+            while (!string.Equals(itemId, rootItemId, StringComparison.Ordinal)) {
+                runtimeIdPath.Insert(0, itemId);
                 contextElem = walker.GetParent(contextElem);
-                runtimeIdStr = GetRuntimeIdString(contextElem);
+                itemId = new RuntimeId(contextElem).ToItemId();
             }
             var path = string.Join(itemSeparator, runtimeIdPath);
-            return $"ROOT{itemSeparator}{path}";
+            return $"{ProviderPathRoot}{itemSeparator}{path}";
         }
 
         #endregion
