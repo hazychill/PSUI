@@ -8,6 +8,7 @@ namespace PSUI.Provider {
         public string? UIName { get; set; }
 
         [Parameter]
+        [ArgumentCompleter(typeof(ControlTypeArgumentCompleter))]
         public ControlType? UIControlType { get; set; }
 
         [Parameter]

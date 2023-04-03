@@ -1,10 +1,12 @@
+using System.Collections;
 using System.Management.Automation;
+using System.Management.Automation.Language;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
 
 namespace PSUI;
 
-public abstract class MapBasedTypeConverter<TFrom, TTo> : PSTypeConverter
+public abstract class MapBasedTypeConverter<TFrom, TTo> : PSTypeConverter, IArgumentCompleter
         where TFrom : notnull
         where TTo : notnull {
 
@@ -126,6 +128,38 @@ public abstract class MapBasedTypeConverter<TFrom, TTo> : PSTypeConverter
             throw new ArgumentException("source type not supported", nameof(sourceValue));
         }
     }
+
+    public string[] GetValidKeys() {
+        if (IsStringFromType) {
+            var keys = new string[convertFromMapCaseSensitive.Count];
+            var stringKeyCollection = convertFromMapCaseSensitive.Keys as Dictionary<string, TTo>.KeyCollection;
+            if (stringKeyCollection is not null) {
+                stringKeyCollection.CopyTo(keys, 0);
+                return keys;
+            }
+            else {
+                return new string[0];
+            }
+        }
+        else {
+            return new string[0];
+        }
+    }
+
+    public IEnumerable<CompletionResult> CompleteArgument(string commandName, string parameterName, string wordToComplete, CommandAst commandAst, IDictionary fakeBoundParameters) {
+        var resultList = new List<CompletionResult>();
+        if (IsStringFromType) {
+            var stringKeys = convertFromMapCaseSensitive.Keys as IEnumerable<String>;
+            if (stringKeys is not null) {
+                var canditates = stringKeys
+                    .Where(key => key.StartsWith(wordToComplete, StringComparison.OrdinalIgnoreCase))
+                    .Select(key => new CompletionResult(key));
+                resultList.AddRange(canditates);
+            }
+        }
+
+        return resultList;
+    }
 }
 
 public class ControlTypeTypeConverter : MapBasedTypeConverter<string, ControlType> {
@@ -175,6 +209,12 @@ public class ControlTypeTypeConverter : MapBasedTypeConverter<string, ControlTyp
         foreach (var entry in ControlTypeTypeConverter.convertToMap) {
             convertToMap[entry.Key] = entry.Value;
         }
+    }
+}
+
+public class ControlTypeArgumentCompleter : IArgumentCompleter {
+    public IEnumerable<CompletionResult> CompleteArgument(string commandName, string parameterName, string wordToComplete, CommandAst commandAst, IDictionary fakeBoundParameters) {
+        return ControlTypeTypeConverter.Instance.CompleteArgument(commandName, parameterName, wordToComplete, commandAst, fakeBoundParameters);
     }
 }
 
@@ -246,6 +286,12 @@ public class AutomationPropertyTypeConverter : MapBasedTypeConverter<string, Aut
     }
 }
 
+public class AutomationPropertyArgumentCompleter : IArgumentCompleter {
+    public IEnumerable<CompletionResult> CompleteArgument(string commandName, string parameterName, string wordToComplete, CommandAst commandAst, IDictionary fakeBoundParameters) {
+        return AutomationPropertyTypeConverter.Instance.CompleteArgument(commandName, parameterName, wordToComplete, commandAst, fakeBoundParameters);
+    }
+}
+
 public class AutomationPatternTypeConverter : MapBasedTypeConverter<string, AutomationPattern> {
     private static Dictionary<string, AutomationPattern> convertFromMapCaseSensitive;
     private static Dictionary<string, AutomationPattern> convertFromMapCaseInsensitive;
@@ -298,5 +344,11 @@ public class AutomationPatternTypeConverter : MapBasedTypeConverter<string, Auto
 
     protected override void FillConvertToMap(Dictionary<AutomationPattern, string> convertToMap) {
         // ConvertTo not supported
+    }
+}
+
+public class AutomationPatternArgumentCompleter : IArgumentCompleter {
+    public IEnumerable<CompletionResult> CompleteArgument(string commandName, string parameterName, string wordToComplete, CommandAst commandAst, IDictionary fakeBoundParameters) {
+        return AutomationPatternTypeConverter.Instance.CompleteArgument(commandName, parameterName, wordToComplete, commandAst, fakeBoundParameters);
     }
 }

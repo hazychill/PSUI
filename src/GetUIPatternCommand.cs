@@ -8,6 +8,7 @@ namespace PSUI {
         public AutomationElement[]? AutomationElement { get; set; }
 
         [Parameter(ParameterSetName = "patternObj", Position = 0)]
+        [ArgumentCompleter(typeof(AutomationPatternArgumentCompleter))]
         public AutomationPattern? Pattern { get; set; }
 
         [Parameter(ParameterSetName = "supportedPattern")]
