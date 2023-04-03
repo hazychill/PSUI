@@ -18,19 +18,19 @@ Describe 'Get-ItemProperty of PSUI' {
         $expected = $testAppProc.UIWindow.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::BoundingRectangleProperty);
         $actual = $testAppWindow | Get-ItemProperty -Name 'BoundingRectangle'
         $actual | Should -Not -Be $null
-        $actual | Should -Be $expected
+        $actual.BoundingRectangle | Should -Be $expected
 
         $actual = $testAppWindow | Get-ItemProperty -Name 'boundingrectangle'
         $actual | Should -Not -Be $null
-        $actual | Should -Be $expected
+        $actual.BoundingRectangle | Should -Be $expected
 
         $actual = $testAppWindow | Get-ItemProperty -Name 'AutomationElement.BoundingRectangle'
-        $actual | Should -Not -Be $null
-        $actual | Should -Be $expected
+        $actual.('AutomationElement.BoundingRectangle') | Should -Not -Be $null
+        $actual.('AutomationElement.BoundingRectangle') | Should -Be $expected
 
         $actual = $testAppWindow | Get-ItemProperty -Name 'automationelement.boundingrectangle'
-        $actual | Should -Not -Be $null
-        $actual | Should -Be $expected
+        $actual.('AutomationElement.BoundingRectangle') | Should -Not -Be $null
+        $actual.('AutomationElement.BoundingRectangle') | Should -Be $expected
     }
 
     It 'Gets element property of Pattern' {
@@ -39,15 +39,27 @@ Describe 'Get-ItemProperty of PSUI' {
             | Get-ChildItem
             | Where-Object AutomationId -EQ 'scrollBarElement'
             | Get-ItemProperty -Name 'Scroll.VerticalViewSize'
-        $actual | Should -Not -Be $null
-        $actual | Should -Be $expected
+        $actual.('Scroll.VerticalViewSize') | Should -Not -Be $null
+        $actual.('Scroll.VerticalViewSize') | Should -Be $expected
 
         $actual = $testAppWindow
             | Get-ChildItem
             | Where-Object AutomationId -EQ 'scrollBarElement'
             | Get-ItemProperty -Name 'scroll.verticalviewsize'
-        $actual | Should -Not -Be $null
-        $actual | Should -Be $expected
+        $actual.('Scroll.VerticalViewSize') | Should -Not -Be $null
+        $actual.('Scroll.VerticalViewSize') | Should -Be $expected
 
+    }
+
+    It 'Gets multiple element properties at once' {
+        $expectedRuntimeId = $testAppProc.UIWindow.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::RuntimeIdProperty);
+        $expectedBoundingRectangle = $testAppProc.UIWindow.GetCurrentPropertyValue([System.Windows.Automation.AutomationElement]::BoundingRectangleProperty);
+        $actual = $testAppWindow | Get-ItemProperty -Name 'RuntimeId', 'BoundingRectangle'
+        $actual.RuntimeId | Should -Be $expectedRuntimeId
+        $actual.BoundingRectangle | Should -Be $expectedBoundingRectangle
+    }
+
+    It 'Gets item itself without name' {
+        $testAppWindow | Get-ItemProperty | Should -Be $testAppWindow
     }
 }

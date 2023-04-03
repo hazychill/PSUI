@@ -186,38 +186,27 @@ namespace PSUI.Provider {
         }
 
         public void GetProperty(string path, Collection<string> providerSpecificPickList){
-            var runtimeIdPath = GetRuntimeIdPath(path);
-            if (runtimeIdPath is null) {
-                WriteError(new ErrorRecord(
-                    new ArgumentException(ErrorId.InvalidPathFormat, nameof(path)),
-                    ErrorId.InvalidPathFormat,
-                    ErrorCategory.ObjectNotFound,
-                    null));
-            }
-            else {
-                var item = DigPath(root, runtimeIdPath);
-                if (item is null) {
-                    WriteError(new ErrorRecord(
-                        new ArgumentException(ErrorId.PathNotFound, nameof(path)),
-                        ErrorId.PathNotFound,
-                        ErrorCategory.ObjectNotFound,
-                        null));
+            if (TryGetPathItem(path, out AutomationElement? item, true)) {
+                PSObject result;
+                if (providerSpecificPickList is null || providerSpecificPickList.Count == 0) {
+                    result = PSObject.AsPSObject(item);
                 }
                 else {
+                    result = new PSObject();
                     var converter = AutomationPropertyTypeConverter.Instance;
-
-                    foreach (var propName in providerSpecificPickList) {
+                    foreach (string propName in providerSpecificPickList) {
                         if (converter.CanConvertFrom(propName, typeof(AutomationProperty))) {
                             var prop = converter.ConvertFrom(propName, typeof(AutomationProperty), null, true) as AutomationProperty;
                             if (prop is not null) {
                                 var propVal = item.GetCurrentPropertyValue(prop);
                                 if (propVal is not null) {
-                                    WritePropertyObject(propVal, path);
+                                    result.Properties.Add(new PSNoteProperty(propName, propVal));
                                 }
                             }
                         }
                     }
                 }
+                WritePropertyObject(result, path);
             }
         }
 
