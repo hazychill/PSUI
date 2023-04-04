@@ -91,6 +91,37 @@ namespace PSUI.Provider {
             return TryGetPathItem(path, out AutomationElement _);
         }
 
+        protected override void InvokeDefaultAction(string path) {
+            var dynamicParams = DynamicParameters as InvokeDefaultActionDynamicParameters;
+            if (dynamicParams is not null) {
+                if (TryGetPathItem(path, out AutomationElement? pathItem, true)) {
+                    var pattern = pathItem.GetCurrentPattern(dynamicParams.UIPattern);
+                    if (pattern is not null) {
+                        var method = PSObject.AsPSObject(pattern).Methods
+                            .Where(x => string.Equals(x.Name, dynamicParams.UIMethod, StringComparison.OrdinalIgnoreCase))
+                            .FirstOrDefault();
+                        if (method is not null) {
+                            var methodArgs = dynamicParams.UIArgument ?? new object[0];
+                            method.Invoke(methodArgs);
+                        }
+                        else {
+                            // TODO method not found
+                        }
+                    }
+                    else {
+                        // TODO error cannot get pattern
+                    }
+                }
+            }
+            else {
+                // TODO dynamic parameter error
+            }
+        }
+
+        protected override object InvokeDefaultActionDynamicParameters(string path) {
+            return new InvokeDefaultActionDynamicParameters();
+        }
+
         #endregion
 
         #region ContainerCmdletProvider

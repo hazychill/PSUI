@@ -4,12 +4,13 @@ using System.Windows.Automation;
 namespace PSUI.Provider {
     internal sealed class InvokeDefaultActionDynamicParameters {
         [Parameter(Mandatory = true)]
-        public AutomationPattern? As { get; set; }
+        [ArgumentCompleter(typeof(AutomationPatternArgumentCompleter))]
+        public AutomationPattern? UIPattern { get; set; }
 
         [Parameter(Mandatory = true)]
-        public string? Method { get; set; }
+        public string? UIMethod { get; set; }
 
         [Parameter()]
-        public object[]? Argument { get; set; }
+        public object[]? UIArgument { get; set; }
     }
 }
